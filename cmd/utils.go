@@ -23,7 +23,16 @@ func initializeCSV(file *os.File) {
 	}
 
 }
+func getTaskId(file *os.File) int {
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return len(records)
+}
 func addToList(file *os.File, item []string) {
+	currId := getTaskId(file)
 	w := csv.NewWriter(file)
 
 	if err := w.Write(item); err != nil {

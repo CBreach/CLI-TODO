@@ -31,12 +31,12 @@ var addCmd = &cobra.Command{
 		}
 		file, err := os.OpenFile("tasks.csv", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644) //the number implies that the owner can read & write and therest group/other can only read it
 		//defer file.Close() //closes the file after func execution
-		initializeCSV(file)
 		if err != nil {
 			log.Fatal(err)
 		} else {
 			fmt.Println("the file opened correctly")
-
+			initializeCSV(file)
+			addToList(file, args)
 		}
 
 		fmt.Println("item:", strings.Join(args, " "), "added to the list.")
