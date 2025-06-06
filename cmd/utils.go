@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func initializeCSV(file *os.File) {
@@ -31,11 +32,12 @@ func getTaskId(file *os.File) int {
 	}
 	return len(records)
 }
-func addToList(file *os.File, item []string) {
+func addToList(file *os.File, task string) {
 	currId := getTaskId(file)
+	record := []string{strconv.Itoa(currId), task}
 	w := csv.NewWriter(file)
-
-	if err := w.Write(item); err != nil {
-
+	defer w.Flush()
+	if err := w.Write(record); err != nil {
+		log.Fatalln(err)
 	}
 }

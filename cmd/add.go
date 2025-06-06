@@ -36,7 +36,7 @@ var addCmd = &cobra.Command{
 		} else {
 			fmt.Println("the file opened correctly")
 			initializeCSV(file)
-			addToList(file, args)
+			addToList(file, args[0])
 		}
 
 		fmt.Println("item:", strings.Join(args, " "), "added to the list.")
