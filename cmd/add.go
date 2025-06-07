@@ -30,7 +30,7 @@ var addCmd = &cobra.Command{
 			fmt.Println("the file exits, itll be opened")
 		}
 		file, err := os.OpenFile("tasks.csv", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644) //the number implies that the owner can read & write and therest group/other can only read it
-		//defer file.Close() //closes the file after func execution
+		defer file.Close() //closes the file after func execution
 		if err != nil {
 			log.Fatal(err)
 		} else {
