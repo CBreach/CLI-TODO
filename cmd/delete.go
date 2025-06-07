@@ -25,7 +25,7 @@ var deleteCmd = &cobra.Command{
 		//convert raw data into content str
 		content := strings.Split(string(data), "\n")
 
-		fmt.Println(content)
+		fmt.Println(content[1])
 	},
 }
 

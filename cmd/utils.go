@@ -41,3 +41,8 @@ func addToList(file *os.File, task string) {
 		log.Fatalln(err)
 	}
 }
+func removeTask(records []string, ID int){
+	for i, record := range records{
+		
+	}
+}
