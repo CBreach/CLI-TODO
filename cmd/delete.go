@@ -26,6 +26,11 @@ var deleteCmd = &cobra.Command{
 		content := strings.Split(string(data), "\n")
 
 		fmt.Println(content[1])
+		newList , err :=removeTask(content, 3)
+		if err != nil{
+			log.Fatal("could not remove task from list, probably invalid ID")
+		}
+		fmt.Println(newList)
 	},
 }
 

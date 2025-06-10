@@ -41,8 +41,14 @@ func addToList(file *os.File, task string) {
 		log.Fatalln(err)
 	}
 }
-func removeTask(records []string, ID int){
-	for i, record := range records{
-		
+func removeTask(records []string, ID int) ([]string, error){
+	fmt.Println("this is the length of the arr", len(records))
+	if ID <= 0 || ID >= len(records){
+		return records, fmt.Errorf("ID does not exist: %d", ID)
 	}
+	half1 := records[:ID]
+	half2 := records [ID+1:]
+	return append(half1, half2...), nil
+	
+
 }
