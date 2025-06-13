@@ -38,8 +38,10 @@ var deleteCmd = &cobra.Command{
 		if err != nil{
 			log.Fatal("could not remove task from list, probably invalid ID")
 		}
-		fmt.Println(newList)
-		updateID(content)
+		updateID(newList)
+		//now we can simply overwrite the csv file
+
+		
 	},
 }
 

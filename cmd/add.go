@@ -19,7 +19,7 @@ var addCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) <= 0 {
-			fmt.Println("task parameter required")
+			fmt.Println("task name parameter required")
 			return
 		}
 
@@ -27,7 +27,7 @@ var addCmd = &cobra.Command{
 		if _, err := os.Stat("tasks.csv"); os.IsNotExist(err) {
 			fmt.Println("file does not exits, it'll be created")
 		} else {
-			fmt.Println("the file exits, itll be opened")
+			fmt.Println("the file exits, it'll be opened")
 		}
 		file, err := os.OpenFile("tasks.csv", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644) //the number implies that the owner can read & write and therest group/other can only read it
 		defer file.Close() //closes the file after func execution

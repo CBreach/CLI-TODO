@@ -6,8 +6,19 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
-
+func openFile(mode string, file string) (*os.File,error){
+	if mode == "edit"{
+		return nil
+	}else if mode == "overwrite"{
+		f, err := os.OpenFile("task.csv", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644) 
+		return nil
+	}
+	else{
+		return nil,fmt.Errorf("invalid mode parameter")
+	}
+}
 func initializeCSV(file *os.File) {
 	info, err := os.Stat(file.Name())
 	if err != nil {
@@ -40,9 +51,15 @@ func addToList(file *os.File, task string) {
 		log.Fatalln(err)
 	}
 }
+
 func updateID(content []string){
-	for _, line := range content{
-		fmt.Println(line)
+	for i, line := range(content){
+		if i > 0{
+			_, updatedEntry, found := strings.Cut(line, ",")
+			if found {
+				content[i] = updatedEntry
+			}
+		}
 	}
 }
 func removeTask(records []string, ID int) ([]string, error){
