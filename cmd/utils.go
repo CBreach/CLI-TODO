@@ -9,7 +9,6 @@ import (
 )
 
 func initializeCSV(file *os.File) {
-	fmt.Println("we are here yall")
 	info, err := os.Stat(file.Name())
 	if err != nil {
 		log.Fatal(err)
@@ -39,6 +38,11 @@ func addToList(file *os.File, task string) {
 	defer w.Flush()
 	if err := w.Write(record); err != nil {
 		log.Fatalln(err)
+	}
+}
+func updateID(content []string){
+	for _, line := range content{
+		fmt.Println(line)
 	}
 }
 func removeTask(records []string, ID int) ([]string, error){

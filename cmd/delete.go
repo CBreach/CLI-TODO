@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 	"github.com/spf13/cobra"
+	"strconv"
 )
 
 // deleteCmd represents the delete command
@@ -22,15 +23,23 @@ var deleteCmd = &cobra.Command{
 		if err != nil{
 			log.Fatal("could not read file")
 		}
+		if len(args) != 1{
+			log.Fatal("error, task ID not provided")
+		}
+		taskIdStr := args[0]
+		id, err := strconv.Atoi(taskIdStr)
+		if err != nil{
+			log.Fatal("Task ID must be a valid, positive Integer")
+		}
 		//convert raw data into content str
 		content := strings.Split(string(data), "\n")
 
-		fmt.Println(content[1])
-		newList , err :=removeTask(content, 3)
+		newList , err :=removeTask(content, id)
 		if err != nil{
 			log.Fatal("could not remove task from list, probably invalid ID")
 		}
 		fmt.Println(newList)
+		updateID(content)
 	},
 }
 
