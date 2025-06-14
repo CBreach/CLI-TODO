@@ -40,8 +40,17 @@ var deleteCmd = &cobra.Command{
 		}
 		updateID(newList)
 		//now we can simply overwrite the csv file
+		file, err := openFile("overwrite", "tasks.csv")
+		fmt.Println("FILE IS NIL?", file == nil)
+		if err != nil{
+			log.Fatal("error: ", err)
+		}
+		defer file.Close()
 
-		
+		initializeCSV(file)
+		addToList(file, newList)
+
+		fmt.Println("this is the file:", file)
 	},
 }
 

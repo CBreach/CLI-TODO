@@ -7,17 +7,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"io"
 )
 func openFile(mode string, file string) (*os.File,error){
-	if mode == "edit"{
-		return nil
-	}else if mode == "overwrite"{
-		f, err := os.OpenFile("task.csv", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644) 
-		return nil
-	}
-	else{
-		return nil,fmt.Errorf("invalid mode parameter")
-	}
+	switch mode {
+    case "edit":
+        return os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+    case "overwrite":
+        return os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+    default:
+        return nil, fmt.Errorf("invalid mode parameter: %s", mode)
+    }
 }
 func initializeCSV(file *os.File) {
 	info, err := os.Stat(file.Name())
@@ -35,6 +35,10 @@ func initializeCSV(file *os.File) {
 
 }
 func getTaskId(file *os.File) int {
+	_, err := file.Seek(0,0)
+	if err != nil{
+		log.Fatal("Could not seek to beginning: ", err)
+	}
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
 	if err != nil {
@@ -42,13 +46,40 @@ func getTaskId(file *os.File) int {
 	}
 	return len(records)
 }
-func addToList(file *os.File, task string) {
-	currId := getTaskId(file)
-	record := []string{strconv.Itoa(currId), task}
+func addToList(file *os.File, tasks []string) {
+	// Ensure we're writing at the end of the file
+	_, err := file.Seek(0, io.SeekEnd)
+	if err != nil {
+		log.Fatal("Could not seek to end: ", err)
+	}
+
+	// Count current lines (ID base)
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		log.Fatal("Could not seek to beginning: ", err)
+	}
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	currId := len(records)
+
+	// Back to end for writing
+	_, err = file.Seek(0, io.SeekEnd)
+	if err != nil {
+		log.Fatal("Could not seek to end (again): ", err)
+	}
+
 	w := csv.NewWriter(file)
 	defer w.Flush()
-	if err := w.Write(record); err != nil {
-		log.Fatalln(err)
+
+	for _, task := range tasks {
+		record := []string{strconv.Itoa(currId), task}
+		if err := w.Write(record); err != nil {
+			log.Fatalln(err)
+		}
+		currId++
 	}
 }
 
