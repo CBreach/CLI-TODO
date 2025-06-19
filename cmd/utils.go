@@ -3,29 +3,40 @@ package cmd
 import (
 	"encoding/csv"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
 	"strings"
-	"io"
 )
-func openFile(mode string, file string) (*os.File,error){
+
+func openFile(mode string, file string) (*os.File, error) {
 	switch mode {
-    case "edit":
-        return os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
-    case "overwrite":
-        return os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
-    default:
-        return nil, fmt.Errorf("invalid mode parameter: %s", mode)
-    }
+	case "edit":
+		return os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	case "overwrite":
+		return os.OpenFile(file, os.O_RDWR|os.O_WRONLY|os.O_TRUNC, 0644)
+	default:
+		return nil, fmt.Errorf("invalid mode parameter: %s", mode)
+	}
 }
 func initializeCSV(file *os.File) {
+	_, err := file.Seek(0, 0)
+	if err != nil {
+		log.Fatal("Could not seek to beginning: ", err)
+	}
 	info, err := os.Stat(file.Name())
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("file, size: ", info.Size())
 	if info.Size() == 0 {
 		headers := []string{"ID", "TASK"}
+		fmt.Println("Writable?", file.Fd()) // should be > 0
+		_, err = file.Write([]byte{})
+		if err != nil {
+			log.Fatal("Can't write to file:", err)
+		}
 		w := csv.NewWriter(file)
 		if err := w.Write(headers); err != nil {
 			log.Fatal("error writing to the csv: ", err)
@@ -35,8 +46,8 @@ func initializeCSV(file *os.File) {
 
 }
 func getTaskId(file *os.File) int {
-	_, err := file.Seek(0,0)
-	if err != nil{
+	_, err := file.Seek(0, 0)
+	if err != nil {
 		log.Fatal("Could not seek to beginning: ", err)
 	}
 	reader := csv.NewReader(file)
@@ -47,6 +58,7 @@ func getTaskId(file *os.File) int {
 	return len(records)
 }
 func addToList(file *os.File, tasks []string) {
+	fmt.Println("These are the tasks", tasks)
 	// Ensure we're writing at the end of the file
 	_, err := file.Seek(0, io.SeekEnd)
 	if err != nil {
@@ -83,24 +95,25 @@ func addToList(file *os.File, tasks []string) {
 	}
 }
 
-func updateID(content []string){
-	for i, line := range(content){
-		if i > 0{
+func updateID(content []string) {
+	for i, line := range content {
+		if i > 0 {
 			_, updatedEntry, found := strings.Cut(line, ",")
+			fmt.Println("updated Etry: ", updatedEntry)
 			if found {
+				fmt.Println("we found the delimeter")
 				content[i] = updatedEntry
 			}
 		}
 	}
 }
-func removeTask(records []string, ID int) ([]string, error){
+func removeTask(records []string, ID int) ([]string, error) {
 	fmt.Println("this is the length of the arr", len(records))
-	if ID <= 0 || ID >= len(records){
+	if ID <= 0 || ID >= len(records) {
 		return records, fmt.Errorf("ID does not exist: %d", ID)
 	}
-	half1 := records[:ID]
-	half2 := records [ID+1:]
+	half1 := records[1:ID]
+	half2 := records[ID+1:]
 	return append(half1, half2...), nil
-	
 
 }
