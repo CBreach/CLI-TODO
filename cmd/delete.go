@@ -4,7 +4,6 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -33,17 +32,14 @@ var deleteCmd = &cobra.Command{
 		}
 		//convert raw data into content str
 		content := strings.Split(string(data), "\n")
-
+		content = content[:len(content)-1] //gets rid of the annoying white empty index
 		newList, err := removeTask(content, id)
 		if err != nil {
 			log.Fatal("could not remove task from list, probably invalid ID")
 		}
 		updateID(newList)
-		fmt.Println("this is the list after updating: ", newList)
-
 		//now we can simply overwrite the csv file
 		file, err := openFile("overwrite", "tasks.csv")
-		fmt.Println("FILE IS NIL?", file == nil)
 		if err != nil {
 			log.Fatal("error: ", err)
 		}
@@ -53,15 +49,13 @@ var deleteCmd = &cobra.Command{
 			log.Fatal("error: ", err)
 		}
 		defer file.Close()
-		// fmt.Println("FILE DESCRIPTOR:", file.Fd())
-		// _, err = file.Write([]byte{}) // test write
-		// if err != nil {
-		// 	log.Fatal("Can't write to file:", err)
-		// }
+		_, err = file.Write([]byte{}) // test write
+		if err != nil {
+			log.Fatal("Can't write to file:", err)
+		}
 
 		initializeCSV(file)
 		addToList(file, newList)
-		// fmt.Println("this is the file:", file)
 	},
 }
 

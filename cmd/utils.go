@@ -29,10 +29,10 @@ func initializeCSV(file *os.File) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("file, size: ", info.Size())
+	//fmt.Println("file, size: ", info.Size())
 	if info.Size() == 0 {
 		headers := []string{"ID", "TASK"}
-		fmt.Println("Writable?", file.Fd()) // should be > 0
+		//fmt.Println("Writable?", file.Fd()) // should be > 0
 		_, err = file.Write([]byte{})
 		if err != nil {
 			log.Fatal("Can't write to file:", err)
@@ -58,7 +58,6 @@ func getTaskId(file *os.File) int {
 	return len(records)
 }
 func addToList(file *os.File, tasks []string) {
-	fmt.Println("These are the tasks", tasks)
 	// Ensure we're writing at the end of the file
 	_, err := file.Seek(0, io.SeekEnd)
 	if err != nil {
@@ -97,18 +96,15 @@ func addToList(file *os.File, tasks []string) {
 
 func updateID(content []string) {
 	for i, line := range content {
-		if i > 0 {
+		if line != "" {
 			_, updatedEntry, found := strings.Cut(line, ",")
-			fmt.Println("updated Etry: ", updatedEntry)
 			if found {
-				fmt.Println("we found the delimeter")
 				content[i] = updatedEntry
 			}
 		}
 	}
 }
 func removeTask(records []string, ID int) ([]string, error) {
-	fmt.Println("this is the length of the arr", len(records))
 	if ID <= 0 || ID >= len(records) {
 		return records, fmt.Errorf("ID does not exist: %d", ID)
 	}
