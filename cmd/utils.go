@@ -113,3 +113,19 @@ func removeTask(records []string, ID int) ([]string, error) {
 	return append(half1, half2...), nil
 
 }
+func csvToArray(file string) ([]string, error) {
+
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return nil, fmt.Errorf("could not read file")
+	}
+	//convert raw data into content str
+	content := strings.Split(string(data), "\n")
+	content = content[:len(content)-1] //gets rid of the annoying white empty index
+	return content, nil
+}
+func tabulate(content []string) {
+	for i := range content {
+		content[i] += "\t"
+	}
+}

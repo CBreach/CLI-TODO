@@ -5,9 +5,7 @@ package cmd
 
 import (
 	"log"
-	"os"
 	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -18,10 +16,6 @@ var deleteCmd = &cobra.Command{
 	Short: "deletes a task from the list of TODO's",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		data, err := os.ReadFile("tasks.csv")
-		if err != nil {
-			log.Fatal("could not read file")
-		}
 		if len(args) != 1 {
 			log.Fatal("error, task ID not provided")
 		}
@@ -30,9 +24,10 @@ var deleteCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("Task ID must be a valid, positive Integer")
 		}
-		//convert raw data into content str
-		content := strings.Split(string(data), "\n")
-		content = content[:len(content)-1] //gets rid of the annoying white empty index
+		content, err := csvToArray("tasks.csv")
+		if err != nil {
+			log.Fatal("error: ", err)
+		}
 		newList, err := removeTask(content, id)
 		if err != nil {
 			log.Fatal("could not remove task from list, probably invalid ID")
