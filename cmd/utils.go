@@ -125,7 +125,10 @@ func csvToArray(file string) ([]string, error) {
 	return content, nil
 }
 func tabulate(content []string) {
-	for i := range content {
-		content[i] += "\t"
+	for i, entry := range content {
+		//fmt.Println("this is entry at this point: ", entry)
+		content[i] = strings.ReplaceAll(entry, ",", "\t")
+		content[i] += "\t" //adding a trailing tab char to fix allignment issues
+		//fmt.Printf("%q\n", content[i])
 	}
 }

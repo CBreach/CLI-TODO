@@ -9,6 +9,7 @@ import (
 	"os"
 	"text/tabwriter"
 
+	//"strings"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +22,7 @@ var listCmd = &cobra.Command{
 		w := new(tabwriter.Writer)
 
 		//lets define the format
-		w.Init(os.Stdout, 5, 0, 3, ' ', tabwriter.AlignRight)
+		w.Init(os.Stdout, 0, 0, 3, ' ', 0)
 
 		defer w.Flush()
 		content, err := csvToArray("tasks.csv")
@@ -29,7 +30,11 @@ var listCmd = &cobra.Command{
 			log.Fatal("error: ", err)
 		}
 		tabulate(content)
-		fmt.Fprintln(w, content)
+
+		for _, line := range content {
+			fmt.Fprintln(w, line) // passes individual fields
+		}
+
 	},
 }
 
