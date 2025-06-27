@@ -31,7 +31,7 @@ func initializeCSV(file *os.File) {
 	}
 	//fmt.Println("file, size: ", info.Size())
 	if info.Size() == 0 {
-		headers := []string{"ID", "TASK"}
+		headers := []string{"ID", "TASK", "STATUS"}
 		//fmt.Println("Writable?", file.Fd()) // should be > 0
 		_, err = file.Write([]byte{})
 		if err != nil {
@@ -45,18 +45,7 @@ func initializeCSV(file *os.File) {
 	}
 
 }
-func getTaskId(file *os.File) int {
-	_, err := file.Seek(0, 0)
-	if err != nil {
-		log.Fatal("Could not seek to beginning: ", err)
-	}
-	reader := csv.NewReader(file)
-	records, err := reader.ReadAll()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return len(records)
-}
+
 func addToList(file *os.File, tasks []string) {
 	// Ensure we're writing at the end of the file
 	_, err := file.Seek(0, io.SeekEnd)
@@ -84,9 +73,8 @@ func addToList(file *os.File, tasks []string) {
 
 	w := csv.NewWriter(file)
 	defer w.Flush()
-
 	for _, task := range tasks {
-		record := []string{strconv.Itoa(currId), task}
+		record := []string{strconv.Itoa(currId), task, "pending"}
 		if err := w.Write(record); err != nil {
 			log.Fatalln(err)
 		}

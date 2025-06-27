@@ -1,4 +1,4 @@
-ID,TASK
-1,do the dishes
-2,finish this command
-3,niiiice
+ID,TASK,STATUS
+1,test,pending
+2,test,pending
+3,venancio,pending

@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	//"github.com/mergestat/timediff"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +31,7 @@ var addCmd = &cobra.Command{
 			fmt.Println("the file exits, it'll be opened")
 		}
 		file, err := openFile("edit", "tasks.csv")
-		if err != nil{
+		if err != nil {
 			log.Fatal("error: ", err)
 		} else {
 			fmt.Println("the file opened correctly")
