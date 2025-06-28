@@ -10,7 +10,7 @@ type Task struct {
 	created time.Time
 }
 
-func newTask(id int, name string, status bool, dueDate string) *Task {
+func NewTask(id int, name string, status bool, dueDate string) *Task {
 	return &Task{
 		ID:      id,
 		Name:    name,

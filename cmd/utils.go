@@ -8,6 +8,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/CBreach/CLI-TODO/tasks"
 )
 
 func openFile(mode string, file string) (*os.File, error) {
@@ -46,6 +48,20 @@ func initializeCSV(file *os.File) {
 
 }
 
+/*
+this function will need to be further modified so that it later on it takes other flags such as dueDate, etc.
+*/
+func initializeStructObjcts(args []string) []tasks.Task {
+	var taskArr []tasks.Task
+
+	for _, taskName := range args {
+		// 0 is a dummy ID that we are passing in as the ID of each task is determined later on the program
+		task := tasks.NewTask(0, taskName, false, "N/A")
+		taskArr = append(taskArr, *task)
+	}
+	return taskArr
+}
+
 func addToList(file *os.File, tasks []string) {
 	// Ensure we're writing at the end of the file
 	_, err := file.Seek(0, io.SeekEnd)
@@ -74,6 +90,7 @@ func addToList(file *os.File, tasks []string) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 	for _, task := range tasks {
+
 		record := []string{strconv.Itoa(currId), task, "pending"}
 		if err := w.Write(record); err != nil {
 			log.Fatalln(err)

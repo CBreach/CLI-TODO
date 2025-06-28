@@ -9,9 +9,12 @@ import (
 	"os"
 	"strings"
 
+	//"github.com/CBreach/CLI-TODO/tasks"
 	//"github.com/mergestat/timediff"
 	"github.com/spf13/cobra"
 )
+
+var dueDates []string
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -23,7 +26,13 @@ var addCmd = &cobra.Command{
 			fmt.Println("task name parameter required")
 			return
 		}
-
+		fmt.Println("this is how big args is: ", len(args))
+		for i, entry := range args {
+			fmt.Println(entry)
+			if len(dueDates) > 0 {
+				fmt.Println(dueDates[i])
+			}
+		}
 		//lets first check if the file exists in the system
 		if _, err := os.Stat("tasks.csv"); os.IsNotExist(err) {
 			fmt.Println("file does not exits, it'll be created")
@@ -48,6 +57,7 @@ var addCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(addCmd)
 
+	addCmd.Flags().StringArrayVarP(&dueDates, "due", "d", []string{"N/A"}, "Due date(s) for the task(s)")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

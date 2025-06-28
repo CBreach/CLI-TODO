@@ -7,7 +7,7 @@ import (
 
 func TestNewTask(t *testing.T) {
 	now := time.Now()
-	task := newTask(1, "this is a test", false, "tommorrow")
+	task := NewTask(1, "this is a test", false, "tommorrow")
 
 	if task.Name != "this is a test" {
 		t.Errorf("expected Name %q, got %q", "this is a test", task.Name)
