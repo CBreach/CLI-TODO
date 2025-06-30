@@ -7,11 +7,30 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"text/tabwriter"
+	"time"
 
 	//"strings"
+
+	"github.com/mergestat/timediff"
 	"github.com/spf13/cobra"
 )
+
+func isolateTimeStamp(tasks []string) {
+	for i, task := range tasks[1:] {
+		parts := strings.Split(task, ",")
+		createdTime, err := time.ParseInLocation("2006-01-02 15:04:05", parts[3], time.Now().Location())
+		if err != nil {
+			log.Fatal("could not convert time: ", err)
+		}
+		createdTime = createdTime.In(time.Now().Location())
+		created := timediff.TimeDiff(createdTime)
+		parts[3] = created
+
+		tasks[i+1] = strings.Join(parts, ",") // we add 1 to i since we are skipping the header line
+	}
+}
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -29,6 +48,7 @@ var listCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("error: ", err)
 		}
+		isolateTimeStamp(content)
 		tabulate(content)
 
 		for _, line := range content {

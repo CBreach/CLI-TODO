@@ -1,2 +1,3 @@
-ID,TASK,Completed,Due
-1,is the struct working?,❌,"september 12, 2025"
+ID,TASK,Completed,Created,Due
+1,is the struct working?,❌,2025-06-30 15:45:15,N/A
+2,is the struct working?,❌,2025-06-30 16:03:28,2025-07-11

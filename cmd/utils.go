@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/CBreach/CLI-TODO/tasks"
 )
@@ -33,7 +34,7 @@ func initializeCSV(file *os.File) {
 	}
 	//fmt.Println("file, size: ", info.Size())
 	if info.Size() == 0 {
-		headers := []string{"ID", "TASK", "Completed", "Due"}
+		headers := []string{"ID", "TASK", "Completed", "Created", "Due"}
 		//fmt.Println("Writable?", file.Fd()) // should be > 0
 		_, err = file.Write([]byte{})
 		if err != nil {
@@ -91,12 +92,13 @@ func addToList(file *os.File, tasks []string) {
 	defer w.Flush()
 	for i, task := range tasks {
 		var dDate string
+		timeStamp := time.Now().Format("2006-01-02 15:04:05")
 		if len(dueDates) > i {
 			dDate = dueDates[i]
 		} else {
 			dDate = "N/A"
 		}
-		record := []string{strconv.Itoa(currId), task, "❌", dDate}
+		record := []string{strconv.Itoa(currId), task, "❌", timeStamp, dDate}
 		if err := w.Write(record); err != nil {
 			log.Fatalln(err)
 		}

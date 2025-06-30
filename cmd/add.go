@@ -11,7 +11,7 @@ import (
 	"time"
 
 	//"github.com/CBreach/CLI-TODO/tasks"
-	//"github.com/mergestat/timediff"
+	"github.com/mergestat/timediff"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,8 @@ func validateDueDate(date string) (bool, error) {
 		"01/02/2006",      // MM/DD/YYYY
 
 	}
-
+	str1 := timediff.TimeDiff(time.Now())
+	fmt.Println(str1)
 	for _, layout := range validLayouts {
 		if _, err := time.Parse(layout, date); err == nil {
 			return true, nil
