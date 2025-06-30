@@ -1,6 +1,2 @@
-ID,TASK,STATUS
-1,is the struct working?,pending
-2,is the struct working?,pending
-3,is the struct working?,pending
-4,is the struct working?,pending
-5,is the struct working?,pending
+ID,TASK,Completed,Due
+1,is the struct working?,❌,"september 12, 2025"

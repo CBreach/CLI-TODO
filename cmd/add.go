@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	//"github.com/CBreach/CLI-TODO/tasks"
 	//"github.com/mergestat/timediff"
@@ -15,6 +16,22 @@ import (
 )
 
 var dueDates []string
+
+func validateDueDate(date string) (bool, error) {
+	validLayouts := []string{
+		"2006-01-02",      // YYYY-MM-DD
+		"January 2, 2006", // "July 1, 2024"
+		"01/02/2006",      // MM/DD/YYYY
+
+	}
+
+	for _, layout := range validLayouts {
+		if _, err := time.Parse(layout, date); err == nil {
+			return true, nil
+		}
+	}
+	return false, fmt.Errorf("invalid date layout: \"%s\" follow the following formats {YYYY-MM-DD, July 1, 2024, MM/DD/YYYY}", date)
+}
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -26,11 +43,12 @@ var addCmd = &cobra.Command{
 			fmt.Println("task name parameter required")
 			return
 		}
-		fmt.Println("this is how big args is: ", len(args))
-		for i, entry := range args {
-			fmt.Println(entry)
-			if len(dueDates) > 0 {
-				fmt.Println(dueDates[i])
+		if len(dueDates) > 0 {
+			for _, date := range dueDates {
+				_, err := validateDueDate(date)
+				if err != nil {
+					log.Fatal("error: ", err)
+				}
 			}
 		}
 		//lets first check if the file exists in the system
@@ -57,7 +75,7 @@ var addCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(addCmd)
 
-	addCmd.Flags().StringArrayVarP(&dueDates, "due", "d", []string{"N/A"}, "Due date(s) for the task(s)")
+	addCmd.Flags().StringArrayVarP(&dueDates, "due", "d", []string{}, "Due date(s) for the task(s)")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

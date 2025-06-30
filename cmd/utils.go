@@ -33,7 +33,7 @@ func initializeCSV(file *os.File) {
 	}
 	//fmt.Println("file, size: ", info.Size())
 	if info.Size() == 0 {
-		headers := []string{"ID", "TASK", "STATUS"}
+		headers := []string{"ID", "TASK", "Completed", "Due"}
 		//fmt.Println("Writable?", file.Fd()) // should be > 0
 		_, err = file.Write([]byte{})
 		if err != nil {
@@ -89,9 +89,14 @@ func addToList(file *os.File, tasks []string) {
 
 	w := csv.NewWriter(file)
 	defer w.Flush()
-	for _, task := range tasks {
-
-		record := []string{strconv.Itoa(currId), task, "pending"}
+	for i, task := range tasks {
+		var dDate string
+		if len(dueDates) > i {
+			dDate = dueDates[i]
+		} else {
+			dDate = "N/A"
+		}
+		record := []string{strconv.Itoa(currId), task, "❌", dDate}
 		if err := w.Write(record); err != nil {
 			log.Fatalln(err)
 		}
